@@ -1,4 +1,4 @@
-{% if messaages %}
+{% if messages %}
 {% for message in messages %}
 {% if message.tags == 'error' %}
 <div class="alert alert-danger alert-dismissible fade show" role="alert">
@@ -15,7 +15,7 @@
   </button>
 </div>
 {% elif message.tags == 'warning' %}
-<div class="alert alert-warnings alert-dismissible fade show" role="alert">
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
    {{message}}
   <button type="button" class="close" data-dismiss="alert" aria-label="Close">
     <span aria-hidden="true">&times;</span>

@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from django.shortcuts import render,redirect
-from pyexpat.errors import messages
+from django.contrib import messages
 
 
 def REGISTER(request):
@@ -26,5 +26,8 @@ def REGISTER(request):
         user.set_password(password)
         user.save()
         return redirect('login')
-
     return render(request,'registration/register.html')
+
+
+def DO_LOGIN(request):
+    return None
