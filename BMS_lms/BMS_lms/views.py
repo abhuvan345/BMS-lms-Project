@@ -2,7 +2,7 @@ from lib2to3.fixes.fix_input import context
 
 from django.shortcuts import redirect,render
 from django.template.context_processors import request
-from app.models import Categories,Course
+from app.models import Categories,Course,Level
 from unicodedata import category
 
 
@@ -23,7 +23,13 @@ def HOME(request):
 
 
 def SINGLE_COURSE(request):
-    return render(request,'Main/single_course.html')
+    category = Categories.get_all_category(Categories)
+    level = Level.objects.all()
+    context= {
+        'category' : category,
+        'level' : level,
+    }
+    return render(request,'Main/single_course.html',context)
 
 
 def CONTACT_US(request):
