@@ -3,3 +3,7 @@ from .models import *
 # Register your models here.
 
 admin.site.register(Categories)
+# 5:32
+
+admin.site.register(Author)
+admin.site.register(Course)

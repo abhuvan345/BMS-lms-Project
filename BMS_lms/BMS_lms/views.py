@@ -2,8 +2,9 @@ from lib2to3.fixes.fix_input import context
 
 from django.shortcuts import redirect,render
 from django.template.context_processors import request
-from app.models import Categories
+from app.models import Categories,Course
 from unicodedata import category
+
 
 
 def BASE(request):
@@ -12,9 +13,11 @@ def BASE(request):
 
 def HOME(request):
     category =Categories.objects.all().order_by('id')[0:5]
+    course = Course.objects.filter(status = 'PUBLISH').order_by('-id')
 
     context = {
         'category' : category,
+        'course' : course,
     }
     return render(request,'Main/home.html', context)
 
