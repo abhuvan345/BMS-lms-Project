@@ -81,3 +81,7 @@ def SEARCH_COURSE(request):
         'course' : course,
     }
     return render(request,'search/search.html', context)
+
+
+def COURSE_DETAILS(request, slug):
+    return render(request,'course/course_details.html')
