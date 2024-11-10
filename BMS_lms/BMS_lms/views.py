@@ -3,9 +3,11 @@ from lib2to3.fixes.fix_input import context
 from django.http import JsonResponse
 from django.shortcuts import redirect,render
 from django.template.context_processors import request
-from app.models import Categories,Course,Level
+from app.models import Categories,Course,Level,Video,UserCourse
 from unicodedata import category
 from django.template.loader import render_to_string
+from django.db.models import Sum
+from django.contrib import messages
 
 
 
@@ -98,6 +100,13 @@ def SEARCH_COURSE(request):
 
 def COURSE_DETAILS(request, slug):
     category = Categories.get_all_category(Categories)
+    time_duration = Video.objects.filter(course__slug = slug).aggregate(sum=Sum('time_duration'))
+    course_id = Course.objects.get(slug=slug)
+
+    try:
+        check_enroll = UserCourse.objects.get(user=request.user,course = course_id)
+    except UserCourse.DoesNotExist:
+        check_enroll = None
 
     course = Course.objects.filter(slug = slug)
     if course.exists():
@@ -108,6 +117,8 @@ def COURSE_DETAILS(request, slug):
     context = {
         'course' : course,
         'category': category,
+        'time_duration' : time_duration,
+        'check_enroll' : check_enroll,
     }
     return render(request,'course/course_details.html',context)
 
@@ -119,3 +130,31 @@ def PAGE_NOT_FOUND(request):
         'category': category,
     }
     return render(request,'error/404.html',context)
+
+
+def CHECKOUT(request,slug):
+    course = Course.objects.get(slug = slug)
+
+    if course.price == 0:
+        course = UserCourse(
+            user = request.user,
+            course = course,
+        )
+        course.save()
+        messages.success(request,'Enrolled Course Sucessfully!!!')
+        return redirect('my_course')
+
+    context = {
+        'course' : course,
+    }
+
+    return render(request,'checkout/checkout.html',context)
+
+
+def MY_COURSE(request):
+    course = UserCourse.objects.filter(user = request.user)
+
+    context = {
+        'course' : course,
+    }
+    return render(request,'course/my-course.html',context)
