@@ -13,9 +13,10 @@ urlpatterns = [
 
     path('',views.HOME,name='home'),
     path('courses',views.SINGLE_COURSE,name='single_course'),
-    path('product/filter-data',views.filter_data,name='filter-data'),
+    path('courses/filter-data',views.filter_data,name='filter-data'),
     path('contact',views.CONTACT_US,name='contact_us'),
     path('about',views.ABOUT_US,name='about_us'),
+    path('search',views.SEARCH_COURSE,name="search_course"),
 
     path('accounts/register',user_login.REGISTER,name='register'),
     path('accounts/', include('django.contrib.auth.urls')),
