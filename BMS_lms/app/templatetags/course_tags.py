@@ -11,3 +11,5 @@ def discount_calculation(price, discount):
     sellprice = price
     sellprice = price - (price * discount / 100)
     return math.floor(sellprice)
+
+# {% discount_calculation course.price course.discount %}

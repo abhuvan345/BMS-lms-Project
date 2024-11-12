@@ -1,13 +1,20 @@
 from lib2to3.fixes.fix_input import context
-
+import math
+from django.contrib.admin import action
 from django.http import JsonResponse
 from django.shortcuts import redirect,render
 from django.template.context_processors import request
-from app.models import Categories,Course,Level,Video,UserCourse
+from app.models import Categories,Course,Level,Video,UserCourse,Payment
+from django.views.decorators.csrf import csrf_exempt
 from unicodedata import category
 from django.template.loader import render_to_string
 from django.db.models import Sum
 from django.contrib import messages
+import razorpay
+from  time import time
+from .settings import *
+
+client = razorpay.Client(auth=(KEY_ID,KEY_SECERET))
 
 
 
@@ -134,6 +141,9 @@ def PAGE_NOT_FOUND(request):
 
 def CHECKOUT(request,slug):
     course = Course.objects.get(slug = slug)
+    action = request.GET.get('action')
+    order = None
+
 
     if course.price == 0:
         course = UserCourse(
@@ -143,9 +153,40 @@ def CHECKOUT(request,slug):
         course.save()
         messages.success(request,'Enrolled Course Sucessfully!!!')
         return redirect('my_course')
+    elif action == 'create_payment':
+        if request.method == "POST":
+            first_name = request.POST.get('first_name')
+            last_name = request.POST.get('last_name')
+            email = request.POST.get('email')
+
+            amountd = (course.price - (course.price * course.discount / 100) )
+            amount = (math.floor(amountd) * 100 )
+            currency = "INR"
+            notes = {
+                "name" : f' {first_name}  {last_name}',
+                "email" : email,
+            }
+            receipt = f"BMS-EL-{int(time())}"
+            order = client.order.create(
+                {
+                    'receipt' : receipt,
+                    'notes' : notes,
+                    'amount' : amount,
+                    'currency' : currency,
+                }
+            )
+
+            payment = Payment(
+                course = course,
+                user = request.user,
+                order_id = order.get('id')
+            )
+            payment.save()
+
 
     context = {
         'course' : course,
+        'order' : order,
     }
 
     return render(request,'checkout/checkout.html',context)
@@ -158,3 +199,119 @@ def MY_COURSE(request):
         'course' : course,
     }
     return render(request,'course/my-course.html',context)
+
+
+@csrf_exempt
+def VERIFY_PAYMENT(request):
+    if request.method == "POST":
+        data = request.POST
+
+        try:
+            # Verifying the payment signature
+            client.utility.verify_payment_signature(data)
+
+            # Fetching required fields
+            razorpay_order_id = data.get('razorpay_order_id')
+            razorpay_payment_id = data.get('razorpay_payment_id')  # corrected variable
+
+            # Fetching the payment instance
+            payment = Payment.objects.get(order_id=razorpay_order_id)
+            payment.payment_id = razorpay_payment_id
+            payment.status = True
+
+            # Saving user course details
+            usercourse = UserCourse(
+                user=payment.user,
+                course=payment.course,
+            )
+            usercourse.save()
+            payment.user_course = usercourse
+            payment.save()
+
+            # Redirect to 'my_course' without context (use session, query params if needed)
+            return redirect('my_course')
+
+        except Payment.DoesNotExist:
+            return render(request, 'verify_payments/fail.html', {'error': 'Payment not found.'})
+        except Exception as e:
+            return render(request, 'verify_payments/fail.html', {'error': str(e)})
+
+
+def WATCH_COURSE(request,slug):
+    course = Course.objects.filter(slug = slug)
+    lecture = request.GET.get('lecture')
+    video = Video.objects.get(id = lecture)
+
+    if course.exists():
+        course = course.first()
+    else:
+        return redirect('404')
+
+    context = {
+        'course' : course,
+        'video' :video,
+        'lecture' : lecture,
+    }
+    return render(request,'course/watch-course.html',context)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+# @csrf_exempt
+# def VERIFY_PAYMENT(request):
+#     if request.method == "POST":
+#         data = request.POST
+#
+#         try:
+#             client.utility.verify_payment_signature(data)
+#             razorpay_order_id = data['razorpay_order_id']
+#             razorpay_payment_id = data['razor_payment_id']
+#
+#             payment = Payment.objects.get(order_id = razorpay_order_id)
+#             payment.payment_id = razorpay_payment_id
+#             payment.status = True
+#
+#             usercourse = UserCourse(
+#                 user = payment.user,
+#                 course = payment.course,
+#             )
+#             usercourse.save()
+#             payment.user_course = usercourse
+#             payment.save()
+#
+#             context = {
+#                 'data' : data,
+#                 'payment' : payment,
+#             }
+#             return redirect('my_course',context)
+#         except:
+#             return render(request,'verify_payments/fail.html' )

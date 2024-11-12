@@ -104,8 +104,32 @@
             </div>
         </form>
     </div>
+{% if order is not None %}
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<script>
+    var options= {
+        "key" : "rzp_test_SxBuw1M2GdmToC",
+        "name" : "BMS-EL",
+        "description" : "Payment For {{course.title}}",
+        "image" : "https://example.com/your_logo",
+        "order_id" : "{{order.id}}",
+        "callback_url" : "http://127.0.0.1:8000/verify_payment",
+        "prefill" : {
+            "name" : "{{order.notes.name}}",
+            "email" : "{{order.notes.email}}",
+        },
 
+        "theme" : {
+            "color" : "#3399cc"
+        }
+    };
+
+    var rzpl = new Razorpay(options);
+    rzpl.open();
+</script>
+{% endif %}
    {% endblock %}
 
 <!--NRQzaiYLIltpvZ0u0MWVGll1   keyseceret-->
 <!--rzp_test_SxBuw1M2GdmToC   keyid-->
+
