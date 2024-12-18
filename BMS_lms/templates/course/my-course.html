@@ -4,17 +4,22 @@
 {% block content %}
 <!-- PAGE TITLE
     ================================================== -->
-    <header class="py-8 py-md-11" style="background-image: none;">
+    <header class="py-8 py-md-11" style="
+    background-image: url('https://plus.unsplash.com/premium_photo-1661775756810-82dbd209fc95?fm=jpg&q=60&w=3000&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8ZWR1Y2F0aW9uJTIwYmFja2dyb3VuZHxlbnwwfHwwfHx8MA%3D%3D');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-blend-mode: overlay;">
         <div class="container text-center py-xl-2">
             <h1 class="display-4 fw-semi-bold mb-0">Enrolled Courses</h1>
             <nav aria-label="breadcrumb">
                 <ol class="breadcrumb breadcrumb-scroll justify-content-center">
                     <li class="breadcrumb-item">
-                        <a class="text-gray-800" href="{% url 'home' %}">
+                        <a class="text-black text-decoration-none" href="{% url 'home' %}">
                             Home
                         </a>
                     </li>
-                    <li class="breadcrumb-item text-gray-800 active" aria-current="page">
+                    <li class="breadcrumb-item text-black active" aria-current="page">
                         My Courses
                     </li>
                 </ol>

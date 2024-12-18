@@ -1,15 +1,21 @@
 {% extends 'base.html'%}
 {% block title %}PROFILE{% endblock %}
 {% block content %}
-<header class="py-8 py-md-11" style="background-image: none">
+<header class="py-8 py-md-11 pb-5" style="
+    background-image: url('https://t4.ftcdn.net/jpg/08/96/96/25/360_F_896962544_zhoOdgutff0Ymi6MiARS1PrL9QVt3o4o.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+
+    background-blend-mode: overlay; ">
   <div class="container text-center py-xl-2">
-    <h1 class="display-4 fw-semi-bold mb-0">Profile Update</h1>
+    <h1 class="display-4 text-white fw-semi-bold mb-0">Profile Update</h1>
     <nav aria-label="breadcrumb">
       <ol class="breadcrumb breadcrumb-scroll justify-content-center">
         <li class="breadcrumb-item">
-          <a href="#" class="text-gray-800">Home</a>
+          <a href="#" class="text-white">Home</a>
         </li>
-        <li class="breadcrumb-item text-gray-800 active" aria-current="page">
+        <li class="breadcrumb-item text-white active" aria-current="page">
           Profile Update
         </li>
       </ol>
@@ -21,7 +27,7 @@
 
 <!-- card -->
 
-<div class="card" style="width: 80%; margin-left: 10%">
+<div class="card pt-4" style="width: 80%; margin-left: 10%">
   {% include 'components/msg.html' %}
 
   <div class="card-body">
