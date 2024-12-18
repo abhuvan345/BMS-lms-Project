@@ -142,7 +142,7 @@ EMAIL_USE_TLS = True
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_HOST_USER = "bhuvana.cs24@bmsce.ac.in"
-EMAIL_HOST_PASSWORD = ""
+EMAIL_HOST_PASSWORD = "bhuvan@student"
 
 KEY_ID = "rzp_test_SxBuw1M2GdmToC"
 KEY_SECERET = "NRQzaiYLIltpvZ0u0MWVGll1"

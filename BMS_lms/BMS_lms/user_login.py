@@ -3,6 +3,8 @@ from django.shortcuts import render,redirect
 from django.contrib import messages
 from app.EmailBackEnd import EmailBackEnd
 from django.contrib.auth import login,logout
+from django.core.mail import send_mail
+from django.conf import settings
 
 
 def REGISTER(request):
@@ -25,6 +27,15 @@ def REGISTER(request):
             username=username,
             email=email,
         )
+
+        send_mail(
+            'BMS-EL Registration Confirmation',
+            'Thank you for regististering to  BMS-EL. Your registration is confirmed !!!',
+            settings.EMAIL_HOST_USER,
+            [email],
+            fail_silently=False,
+        )
+
         user.set_password(password)
         user.save()
         return redirect('login')
