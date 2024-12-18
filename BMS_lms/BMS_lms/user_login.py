@@ -70,3 +70,9 @@ def PROFILE_UPDATE(request):
         user.save()
         messages.success(request, 'Profile is sucessfully updated!! ')
     return redirect('profile')
+
+
+def LOGOUT(request):
+    logout(request)
+    messages.success(request, 'User Logged out sucessfully !!')
+    return redirect('login')

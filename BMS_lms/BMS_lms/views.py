@@ -194,9 +194,11 @@ def CHECKOUT(request,slug):
 
 def MY_COURSE(request):
     course = UserCourse.objects.filter(user = request.user)
+    category = Categories.get_all_category(Categories)
 
     context = {
         'course' : course,
+        'category': category,
     }
     return render(request,'course/my-course.html',context)
 
